@@ -78,6 +78,17 @@ Kafka является распределенным программным бр�
 
     Итого, у вас получился кластер с 3 нодами кафки (kafka01, kafka02, kafka03).
 
+    Создадим топик с помощью команды:
+    ```bash
+    docker run -it --rm --network kafka-kraft-cluster_default confluentinc/cp-kafka:latest kafka-topics \
+    --create \
+    --topic test_topic \
+    --bootstrap-server kafka1:9092,kafka2:9092,kafka3:9092 \
+    --partitions 8 \
+    --replication-factor 3 \
+    --if-not-exists
+    ```
+
     Чтобы убедиться, что кластер жив и здоров, перейдите на http://localhost:8080/ui/clusters/local/brokers
 
     Должно быть что-то вроде
@@ -101,7 +112,7 @@ Kafka является распределенным программным бр�
     Запустите в терминале эту команду
 
     ```bash
-    docker run -it --rm --network kafka-kraft-cluster-docker-compose_default confluentinc/cp-kafka /bin/kafka-producer-perf-test --topic test_topic --num-records 1000000 --throughput -1 --producer-props bootstrap.servers=kafka01:9092,kafka02:9092,kafka03:9092 batch.size=16384 acks=1 linger.ms=50 --record-size 1000
+    docker run -it --rm --network kafka-kraft-cluster_default confluentinc/cp-kafka /bin/kafka-producer-perf-test --topic test_topic --num-records 1000000 --throughput -1 --producer-props bootstrap.servers=kafka01:9092,kafka02:9092,kafka03:9092 batch.size=16384 acks=1 linger.ms=50 --record-size 1000
     ```
 
     Здесь мы бросаем 1 млн событий батчами. Сделайте скриншот результатов из терминала, сделайте скриншот Kafka UI, что события дошли. Объясните, что к чему в результатах. Сколько RPS? Сколько Latency? На всех ли брокерах есть события?

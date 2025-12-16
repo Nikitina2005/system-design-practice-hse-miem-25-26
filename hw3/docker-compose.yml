@@ -42,7 +42,7 @@ services:
     haproxy:
         image: ${PATRONI_TEST_IMAGE:-patroni}
         networks: [ demo ]
-        env_file: docker/patroni.env
+        env_file: patroni-master/docker/patroni.env
         hostname: haproxy
         container_name: demo-haproxy
         ports:
@@ -58,7 +58,7 @@ services:
     patroni1:
         image: ${PATRONI_TEST_IMAGE:-patroni}
         networks: [ demo ]
-        env_file: docker/patroni.env
+        env_file: patroni-master/docker/patroni.env
         hostname: patroni1
         container_name: demo-patroni1
         environment:
@@ -68,7 +68,7 @@ services:
     patroni2:
         image: ${PATRONI_TEST_IMAGE:-patroni}
         networks: [ demo ]
-        env_file: docker/patroni.env
+        env_file: patroni-master/docker/patroni.env
         hostname: patroni2
         container_name: demo-patroni2
         environment:
@@ -78,7 +78,7 @@ services:
     patroni3:
         image: ${PATRONI_TEST_IMAGE:-patroni}
         networks: [ demo ]
-        env_file: docker/patroni.env
+        env_file: patroni-master/docker/patroni.env
         hostname: patroni3
         container_name: demo-patroni3
         environment:
