@@ -34,3 +34,16 @@
 
 <img width="665" height="284" alt="{70C703B3-5642-4514-8961-77209DAF7800}" src="https://github.com/user-attachments/assets/0146862d-8ba7-415a-bf09-7989b6042fa1" />
 
+После этого момента был какой-то перерыв в несколько дней, поэтому теперь лидером стал узел patroni2, IP-адреса узлов тоже поменялись:
+
+<img width="947" height="205" alt="{8FBFD472-14B8-472E-A718-239C6679F311}" src="https://github.com/user-attachments/assets/30392654-5a55-4454-921f-a3e3259ca894" />
+
+Новое состояние HAProxy:
+
+<img width="1920" height="718" alt="{260134A4-3091-4F2D-9265-490FAF35D400}" src="https://github.com/user-attachments/assets/64029914-7cca-412b-9d21-2ecd0546d51c" />
+
+Опять заливаем приложенный в дз скрипт в бд на мастере, но уже на patroni2. Далее я запустила скрипт traffic-generator.py:
+
+<img width="1071" height="560" alt="{1697E7D1-3C77-48F7-93D7-50A75967AA10}" src="https://github.com/user-attachments/assets/6a6e78aa-da7d-4919-889b-30918f50a555" />
+
+Судя по логам, сначала идет подключение к PostrgreSQL по порту 5002, соответствующему репликам, но за счет HAProxy происходит перенаправление на мастер, что также видно в логах, в результате чего соединение устанавливается с мастером, на котором успешно происходят и запись (INSERT), и чтение (READ).
