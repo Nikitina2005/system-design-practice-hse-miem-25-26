@@ -109,8 +109,34 @@ Segment count: 24 - логично, 8 партиций * на 3 реплики �
 
 <img width="678" height="618" alt="{8A576607-93DC-4D75-9283-951255CA89FB}" src="https://github.com/user-attachments/assets/00974efb-6d4d-46c6-a590-d4a9cff76c4b" />
 
-UI перестает отображать актуальную картину:
+UI Kafka перестает отображать актуальную картину:
 
-http://localhost:8080/ui/clusters/local/brokers
+<img width="1920" height="470" alt="image" src="https://github.com/user-attachments/assets/d9aec43a-c0a7-45d6-ab76-de3aa5477e1d" />
+
+P.S. Спустя долгое время он таки убрал мертвый брокер, но метрики (URP и ISR) все равно показывал неправильно:
+
+<img width="1920" height="426" alt="image" src="https://github.com/user-attachments/assets/ca9e3571-e891-4371-bdc1-471fe1170cfd" />
+
+Логи последнего живого брокера:
+
+<img width="1344" height="685" alt="{6C61354C-D9CA-4CC9-B162-BA71AC7801C2}" src="https://github.com/user-attachments/assets/fb742932-43ab-4873-8a4a-bcc3fdb10e67" />
+
+<img width="1920" height="735" alt="{9821C500-CA6E-4B0D-8CE1-7EC319387418}" src="https://github.com/user-attachments/assets/3b9f6c0a-e4ca-4a7e-892e-0fb100020ed8" />
+
+Таким образом, после остановки двух из трех брокеров кластер Kafka потерял кворум брокеров. Судя по логам, последний живой брокер не смог установить соединение с остальными участниками кластера, что привело к невозможности управления метаданными и выбора лидеров для каждой из партиций. Репликация остановилась, ISR упал (количество синхронизированных реплик), а кластер перешел в неработоспособное состояние. Соответственно, Kafka UI и kafka kouncil тоже перестали работать.
 
 3. Восстановление
+
+Восстанавливаем сначала один брокер, со временем возвращается работоспособность скрипта:
+
+<img width="485" height="591" alt="{590A2ECF-BC9F-40C9-ACCB-8AD649EC359E}" src="https://github.com/user-attachments/assets/e8461702-98e3-45d4-a6b7-2f86bb64b784" />
+
+В UI Kafka он тоже возвращается:
+
+<img width="1920" height="472" alt="image" src="https://github.com/user-attachments/assets/39ac73e9-2845-4c58-bc01-090441d88ff9" />
+
+Восстанавливаем третий, который первый, скрипт продолжает работать успешно, брокер появляется в UI:
+
+<img width="1920" height="509" alt="image" src="https://github.com/user-attachments/assets/b001ccee-e479-4213-8925-7169d475756b" />
+
+Таким образом, URP снова становится 0, а ISR 48 из 48, что свидетельствует о том, что кластер полностью восстановился, а реплики синхронизировались.
